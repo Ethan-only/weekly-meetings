@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <!-- 设置网页字符编码，UTF-8 可以正确显示中文。 -->
+  <meta charset="UTF-8" />
+
+  <!-- 让网页在不同屏幕宽度下都按设备宽度显示。 -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- 浏览器标签页上显示的标题。 -->
+  <title>2026年集采-管理周例会-WK26</title>
+
+  <!-- style 标签里写 CSS，用来控制页面外观。 -->
+  <style>
+    /* 同时设置 html 和 body，让整个页面铺满浏览器窗口。 */
+    html,
+    body {
+      margin: 0;              /* 去掉浏览器默认外边距，避免四周有白边。 */
+      width: 100%;            /* 页面宽度占满浏览器。 */
+      height: 100%;           /* 页面高度占满浏览器。 */
+      background: #fff;       /* 页面背景色改为白色，避免黑底和 PPT 内容冲突。 */
+      overflow: hidden;       /* 隐藏滚动条，让页面像 PPT 放映一样。 */
+    }
+
+    /* body 作为舞台容器，把当前幻灯片水平、垂直居中。 */
+    body {
+      display: flex;           /* 使用弹性布局，方便居中图片。 */
+      align-items: center;     /* 垂直居中。 */
+      justify-content: center; /* 水平居中。 */
+    }
+
+    /* 每一页 PPT 图片都会有 slide class。 */
+    .slide {
+      display: none;          /* 默认隐藏所有幻灯片。 */
+      width: auto;            /* 宽度按图片自身比例计算，不强行拉伸。 */
+      height: auto;           /* 高度按图片自身比例计算，不强行拉伸。 */
+      max-width: 100vw;       /* 最大宽度不超过浏览器窗口。 */
+      max-height: 100vh;      /* 最大高度不超过浏览器窗口。 */
+      object-fit: contain;    /* 保持图片比例完整显示，不裁剪、不拉伸变形。 */
+      object-position: center center; /* 图片始终居中显示，避免视觉上偏斜。 */
+      image-rendering: auto;  /* 使用浏览器默认图片渲染，避免表格和文字被额外锐化或像素化。 */
+      background: #fff;       /* 图片区域背景色改为白色。 */
+    }
+
+    /* 同时拥有 slide 和 active class 的图片才会显示。 */
+    .slide.active {
+      display: block;         /* 当前页显示出来。 */
+    }
+
+    /* 右下角页码提示，例如 1 / 6。 */
+    .page-indicator {
+      position: fixed;                    /* 固定在浏览器窗口，不随内容滚动。 */
+      right: 18px;                        /* 距离右边 18 像素。 */
+      bottom: 14px;                       /* 距离底部 14 像素。 */
+      z-index: 10;                        /* 保证页码显示在图片上方。 */
+      color: #111;                        /* 页码文字用深色，适合白色背景。 */
+      font: 14px Arial, sans-serif;       /* 设置字体大小和字体族。 */
+      background: rgba(255, 255, 255, 0.78); /* 半透明白色背景，减少对内容的遮挡。 */
+      border: 1px solid rgba(0, 0, 0, 0.12); /* 加浅色边框，让页码在白底上也可见。 */
+      padding: 6px 10px;                  /* 内边距，让页码不贴边。 */
+      border-radius: 999px;               /* 圆角，做成胶囊形状。 */
+      user-select: none;                  /* 防止用户误选中页码文字。 */
+    }
+  </style>
+</head>
+<body>
+<!-- 这里插入 Python 自动生成的图片标签，每个标签对应一页 PPT。 -->
+  <img class="slide active" src="./slides/slide-1.png" alt="Slide 1" />
+  <img class="slide" src="./slides/slide-2.png" alt="Slide 2" />
+  <img class="slide" src="./slides/slide-3.png" alt="Slide 3" />
+  <img class="slide" src="./slides/slide-4.png" alt="Slide 4" />
+  <img class="slide" src="./slides/slide-5.png" alt="Slide 5" />
+  <img class="slide" src="./slides/slide-6.png" alt="Slide 6" />
+  <img class="slide" src="./slides/slide-7.png" alt="Slide 7" />
+
+  <!-- 页码显示区域，JavaScript 会不断更新这里的文字。 -->
+  <div class="page-indicator" id="pageIndicator"></div>
+
+  <!-- script 标签里写 JavaScript，用来控制上一页、下一页。 -->
+  <script>
+    // 找到页面中所有 class 为 slide 的元素，并转换成数组。
+    const slides = Array.from(document.querySelectorAll(".slide"));
+
+    // 找到右下角页码元素。
+    const pageIndicator = document.getElementById("pageIndicator");
+
+    // 当前页索引。注意数组从 0 开始，所以 0 表示第 1 页。
+    let index = 0;
+
+    // 显示指定页码的函数。nextIndex 是想要跳转到的页码索引。
+    function showSlide(nextIndex) {
+      // 先把当前页的 active class 移除，让当前页隐藏。
+      slides[index].classList.remove("active");
+
+      // 限制页码范围，不能小于 0，也不能大于最后一页。
+      index = Math.max(0, Math.min(nextIndex, slides.length - 1));
+
+      // 给新的当前页添加 active class，让它显示出来。
+      slides[index].classList.add("active");
+
+      // 更新右下角页码文字。index + 1 是给用户看的页码。
+      pageIndicator.textContent = `${index + 1} / ${slides.length}`;
+    }
+
+    // 监听键盘事件，用方向键、空格、Home、End 控制页面。
+    document.addEventListener("keydown", (event) => {
+      // 右方向键或空格键：下一页。
+      if (event.key === "ArrowRight" || event.key === " ") showSlide(index + 1);
+
+      // 左方向键：上一页。
+      if (event.key === "ArrowLeft") showSlide(index - 1);
+
+      // Home 键：跳到第一页。
+      if (event.key === "Home") showSlide(0);
+
+      // End 键：跳到最后一页。
+      if (event.key === "End") showSlide(slides.length - 1);
+    });
+
+    // 监听鼠标点击事件，点击页面任意位置进入下一页。
+    document.addEventListener("click", () => showSlide(index + 1));
+
+    // 页面刚打开时，初始化显示第一页，并更新页码。
+    showSlide(0);
+  </script>
+</body>
+</html>
