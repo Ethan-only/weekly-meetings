@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>2026年集采-管理周例会--WK27</title>
+  <style>
+    html, body { margin: 0; width: 100%; height: 100%; background: #fff; overflow: hidden; }
+    body { display: flex; align-items: center; justify-content: center; }
+    .slide { display: none; width: auto; height: auto; max-width: 100vw; max-height: 100vh; object-fit: contain; object-position: center center; image-rendering: auto; background: #fff; }
+    .slide.active { display: block; }
+    .page-indicator { position: fixed; right: 18px; bottom: 14px; z-index: 10; color: #111; font: 14px Arial, sans-serif; background: rgba(255,255,255,.78); border: 1px solid rgba(0,0,0,.12); padding: 6px 10px; border-radius: 999px; user-select: none; }
+  </style>
+</head>
+<body>
+  <img class="slide active" src="./slides/slide-1.png" alt="Slide 1" />
+  <img class="slide" src="./slides/slide-2.png" alt="Slide 2" />
+  <img class="slide" src="./slides/slide-3.png" alt="Slide 3" />
+  <img class="slide" src="./slides/slide-4.png" alt="Slide 4" />
+  <img class="slide" src="./slides/slide-5.png" alt="Slide 5" />
+  <img class="slide" src="./slides/slide-6.png" alt="Slide 6" />
+  <img class="slide" src="./slides/slide-7.png" alt="Slide 7" />
+  <img class="slide" src="./slides/slide-8.png" alt="Slide 8" />
+  <div class="page-indicator" id="pageIndicator"></div>
+  <script>
+    const slides = Array.from(document.querySelectorAll(".slide"));
+    const pi = document.getElementById("pageIndicator");
+    let idx = 0;
+    function show(n) { slides[idx].classList.remove("active"); idx = Math.max(0, Math.min(n, slides.length-1)); slides[idx].classList.add("active"); pi.textContent = `${idx+1} / ${slides.length}`; }
+    document.addEventListener("keydown", e => { if (e.key === "ArrowRight" || e.key === " ") { e.preventDefault(); show(idx+1); } if (e.key === "ArrowLeft") { e.preventDefault(); show(idx-1); } if (e.key === "Home") { e.preventDefault(); show(0); } if (e.key === "End") { e.preventDefault(); show(slides.length-1); } });
+    document.addEventListener("click", () => show(idx+1));
+    show(0);
+  </script>
+</body>
+</html>
